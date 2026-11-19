@@ -100,11 +100,11 @@ create policy "Admins delete any donor"
 
 insert into public.donors (full_name, blood_group, city, phone, email, available, created_at)
 select * from (values
-  ('Dr. Aisha Khan'::text,  'O-'::text,  'Mumbai'::text,    '+91-98765-43210'::text, 'raj.chorasia@example.com'::text,  true::boolean,  '2025-09-12T09:30:00Z'::timestamptz),
-  ('Rajesh Kumar'::text,    'A+'::text,  'Delhi'::text,     '+91-99876-54321'::text, 'krrish.prashar@example.com'::text, true::boolean,  '2025-09-15T11:00:00Z'::timestamptz),
-  ('Priya Sharma'::text,    'B+'::text,  'Bengaluru'::text, '+91-98112-34567'::text, 'mujjafar.md@example.com'::text, false::boolean, '2025-09-18T14:45:00Z'::timestamptz),
-  ('Vikram Reddy'::text,    'AB+'::text, 'Hyderabad'::text, '+91-99123-45678'::text, 'piyush.kumar@example.com'::text, true::boolean,  '2025-10-02T08:15:00Z'::timestamptz),
-  ('Sneha Iyer'::text,      'O+'::text,  'Chennai'::text,   '+91-98789-12345'::text, 'een.sab.ka.baap@example.com'::text,  true::boolean,  '2025-10-08T16:20:00Z'::timestamptz)
+  ('Raj chorasia'::text,  'O-'::text,  'Mumbai'::text,    '+91-98765-43210'::text, 'raj.chorasia@example.com'::text,  true::boolean,  '2025-09-12T09:30:00Z'::timestamptz),
+  ('Krrish prashar'::text,    'o+'::text,  'Delhi'::text,     '+91-99876-54321'::text, 'krrish.prashar@example.com'::text, true::boolean,  '2025-09-15T11:00:00Z'::timestamptz),
+  ('Mujjafar md'::text,    'B+'::text,  'Bengaluru'::text, '+91-98112-34567'::text, 'mujjafar.md@example.com'::text, false::boolean, '2025-09-18T14:45:00Z'::timestamptz),
+  ('Piyush kumar '::text,    'AB+'::text, 'Hyderabad'::text, '+91-99123-45678'::text, 'piyush.kumar@example.com'::text, true::boolean,  '2025-10-02T08:15:00Z'::timestamptz),
+  ('Een sab ka baap'::text,      'A+'::text,  'Chennai'::text,   '+91-98789-12345'::text, 'een.sab.ka.baap@example.com'::text,  true::boolean,  '2025-10-08T16:20:00Z'::timestamptz)
 ) as t(full_name, blood_group, city, phone, email, available, created_at)
 where not exists (select 1 from public.donors limit 1);
 
