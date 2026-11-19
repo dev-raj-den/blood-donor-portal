@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Sign in, register as a donor, or access the admin control panel of the Blood Donor Finder Portal." />
+  <title>Sign In · Blood Donor Finder Portal</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩸</text></svg>" />
+</head>
+<body>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-logo">🩸</span>
+        <span>BloodDonor<small>FINDER PORTAL</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu"><span></span></button>
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="index.html#donors">Donors</a>
+        <span id="navGreet" class="hidden"></span>
+        <span id="navAuth"></span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="auth-wrap">
+      <!-- Left hero column -->
+      <section class="auth-hero">
+        <h2>Join a community that saves lives.</h2>
+        <p>
+          Register once and become searchable by patients and hospitals across
+          the country. You stay in control &mdash; toggle your availability any
+          time, and your contact is only shown when you are ready to donate.
+        </p>
+        <ul class="bullets">
+          <li><span class="tick">✓</span> Free, instant registration &mdash; no app needed</li>
+          <li><span class="tick">✓</span> Verified donor profile with one-tap call button</li>
+          <li><span class="tick">✓</span> Toggle your availability from the dashboard anytime</li>
+          <li><span class="tick">✓</span> Secure auth powered by Supabase</li>
+        </ul>
+      </section>
+
+      <!-- Right auth card -->
+      <section class="auth-panel">
+        <div class="auth-card">
+          <h2>Welcome 👋</h2>
+          <p class="sub">Log in, register as a donor, or sign in as admin.</p>
+
+          <!-- Tabs -->
+          <div class="tabs" role="tablist">
+            <button class="tab-btn active" type="button" data-tab="user">User Login</button>
+            <button class="tab-btn"        type="button" data-tab="signup">Donor Sign Up</button>
+            <button class="tab-btn"        type="button" data-tab="admin">Admin Login</button>
+          </div>
+
+          <!-- ===== USER LOGIN ===== -->
+          <div class="tab-pane active" id="pane-user">
+            <form id="userLoginForm" novalidate>
+              <div class="field">
+                <label for="uEmail">Email Address</label>
+                <input class="input" type="email" id="uEmail" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+              <div class="field">
+                <label for="uPass">Password</label>
+                <input class="input" type="password" id="uPass" placeholder="Your password" autocomplete="current-password" required />
+              </div>
+              <button type="submit" class="btn btn--primary btn--block btn--lg">Login</button>
+              <p class="form-hint">New here? <a href="#signup" data-switch="signup">Create a donor account</a></p>
+              <p class="form-hint" style="margin-top:4px;font-size:0.78rem;color:#8d90a3">
+                Demo donor (must be created in Supabase first): <strong>raj.chorasia@example.com</strong> / <strong>donor123</strong>
+              </p>
+            </form>
+          </div>
+
+          <!-- ===== DONOR SIGN UP ===== -->
+          <div class="tab-pane" id="pane-signup">
+            <form id="signupForm" novalidate>
+              <div class="field">
+                <label for="suName">Full Name</label>
+                <input class="input" type="text" id="suName" placeholder="e.g. Dev Raj" autocomplete="name" required />
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="suBlood">Blood Group</label>
+                  <select class="select" id="suBlood" required>
+                    <option value="">Select…</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="suCity">City</label>
+                  <input class="input" type="text" id="suCity" placeholder="e.g. Mumbai" required />
+                </div>
+              </div>
+              <div class="field">
+                <label for="suPhone">Phone Number</label>
+                <input class="input" type="tel" id="suPhone" placeholder="+91-98765-43210" autocomplete="tel" required />
+              </div>
+              <div class="field">
+                <label for="suEmail">Email Address</label>
+                <input class="input" type="email" id="suEmail" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+              <div class="field">
+                <label for="suPass">Password</label>
+                <input class="input" type="password" id="suPass" placeholder="At least 6 characters" autocomplete="new-password" required minlength="6" />
+              </div>
+              <button type="submit" class="btn btn--primary btn--block btn--lg">Create Donor Account</button>
+              <p class="form-hint">Already registered? <a href="#user" data-switch="user">Log in here</a></p>
+            </form>
+          </div>
+
+          <!-- ===== ADMIN LOGIN ===== -->
+          <div class="tab-pane" id="pane-admin">
+            <form id="adminLoginForm" novalidate>
+              <div class="field">
+                <label for="aEmail">Admin Email</label>
+                <input class="input" type="email" id="aEmail" placeholder="admin@blood.com" autocomplete="email" required />
+              </div>
+              <div class="field">
+                <label for="aPass">Admin Password</label>
+                <input class="input" type="password" id="aPass" placeholder="Admin password" autocomplete="current-password" required />
+              </div>
+              <button type="submit" class="btn btn--dark btn--block btn--lg">Access Admin Panel</button>
+              <p class="form-hint" style="margin-top:4px;font-size:0.78rem;color:#8d90a3">
+                Admin account must be created in Supabase Dashboard &gt; Authentication &gt; Users with email <strong>admin@blood.com</strong>.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- config.js MUST be loaded BEFORE script.js -->
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll("[data-switch]").forEach(function (link) {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          var tab = link.getAttribute("data-switch");
+          var btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+          if (btn) btn.click();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

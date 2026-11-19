@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Your personal donor dashboard or the admin control panel for the Blood Donor Finder Portal." />
+  <title>Dashboard · Blood Donor Finder Portal</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩸</text></svg>" />
+</head>
+<body>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-logo">🩸</span>
+        <span>BloodDonor<small>FINDER PORTAL</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu"><span></span></button>
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="index.html#donors">Donors</a>
+        <span id="navGreet" class="hidden"></span>
+        <span id="navAuth"></span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ DASH HEADER ============ -->
+    <section class="dash-header">
+      <div class="container">
+        <h1 id="dashTitle">Loading dashboard…</h1>
+        <p id="dashSubtitle">Please wait while we prepare your panel.</p>
+      </div>
+    </section>
+
+    <!-- ============ USER DASHBOARD ============ -->
+    <section class="section" id="userArea">
+      <div class="container">
+        <div class="dash-grid">
+          <!-- Profile card (left) -->
+          <aside>
+            <div class="profile-card" id="profileCard"><!-- populated --></div>
+          </aside>
+
+          <!-- Right side -->
+          <div class="dash-side">
+            <div class="stat-cards">
+              <div class="stat-card">
+                <div class="num" id="userStatAvail">—</div>
+                <div class="lbl">Available Donors</div>
+              </div>
+              <div class="stat-card">
+                <div class="num" id="userStatCity">—</div>
+                <div class="lbl">Donors in Your City</div>
+              </div>
+              <div class="stat-card">
+                <div class="num" id="userStatTotal">—</div>
+                <div class="lbl">Total Donors</div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3>Your Visibility on the Portal</h3>
+              <p class="panel-sub">
+                When you are <strong>Available</strong>, your name, blood group,
+                city and phone number appear in the public search results on the
+                home page so patients can call you directly. Set yourself to
+                <strong>Unavailable</strong> any time you cannot donate.
+              </p>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Field</th>
+                      <th>Visible to Public?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Name</td><td>✅ Yes (when Available)</td></tr>
+                    <tr><td>Blood Group</td><td>✅ Yes (when Available)</td></tr>
+                    <tr><td>City</td><td>✅ Yes (when Available)</td></tr>
+                    <tr><td>Phone Number</td><td>✅ Yes (when Available)</td></tr>
+                    <tr><td>Email Address</td><td>❌ Never shown publicly</td></tr>
+                    <tr><td>Password</td><td>❌ Never shown publicly (stored hashed by Supabase Auth)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <a href="index.html#donors" class="btn btn--ghost btn--sm" style="margin-top:14px">🔍 View Public Donor List</a>
+            </div>
+
+            <div class="panel">
+              <h3>Tips for Safe Donation</h3>
+              <p class="panel-sub">A few reminders every donor should keep in mind.</p>
+              <ul style="display:flex;flex-direction:column;gap:8px;color:#4a4d63;font-size:0.92rem">
+                <li>✔️ Donate only if you are healthy and have eaten recently.</li>
+                <li>✔️ Wait at least 8 weeks between whole-blood donations.</li>
+                <li>✔️ Confirm the recipient's blood group compatibility before donating.</li>
+                <li>✔️ Carry a valid ID and your donor card to the donation site.</li>
+                <li>✔️ Toggle your status to <em>Unavailable</em> if you feel unwell.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ADMIN CONTROL PANEL ============ -->
+    <section class="section hidden" id="adminArea">
+      <div class="container">
+        <div class="stat-cards" style="margin-bottom:24px">
+          <div class="stat-card">
+            <div class="num" id="statTotal">—</div>
+            <div class="lbl">Total Donors</div>
+          </div>
+          <div class="stat-card">
+            <div class="num" id="statAvail">—</div>
+            <div class="lbl">Available Now</div>
+          </div>
+          <div class="stat-card">
+            <div class="num" id="statCities">—</div>
+            <div class="lbl">Cities Covered</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+            <div>
+              <h3>All Registered Donors</h3>
+              <p class="panel-sub" style="margin-bottom:0">Manage donor records. Deletions are permanent.</p>
+            </div>
+            <input class="input" id="adminSearch" placeholder="🔍 Filter by name, city, blood group…" style="max-width:300px" />
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Blood Group</th>
+                  <th>City</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody"><!-- populated --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ CONFIRM MODAL ============ -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal">
+      <h3>Delete donor record?</h3>
+      <p>This will permanently remove the donor from the portal. This action cannot be undone.</p>
+      <div class="actions">
+        <button class="btn btn--ghost" id="confirmNo">Cancel</button>
+        <button class="btn btn--primary" id="confirmYes">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none">
+        © <span id="year"></span> Blood Donor Finder Portal · Powered by Supabase · For demonstration purposes only.
+      </div>
+    </div>
+  </footer>
+
+  <!-- config.js MUST be loaded BEFORE script.js -->
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var y = document.getElementById("year");
+      if (y) y.textContent = new Date().getFullYear();
+
+      // Admin live search filter (client-side row filtering on top of fetched data)
+      document.addEventListener("input", function (e) {
+        if (e.target && e.target.id === "adminSearch") {
+          var q = e.target.value.trim().toLowerCase();
+          document.querySelectorAll("#adminTableBody tr").forEach(function (r) {
+            if (r.querySelector("th")) return;
+            var txt = r.textContent.toLowerCase();
+            r.style.display = txt.indexOf(q) === -1 ? "none" : "";
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
