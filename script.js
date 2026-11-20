@@ -590,10 +590,71 @@
     var card = $("#profileCard");
     fetchMyDonorRow(function (err, donor) {
       if (err || !donor) {
+        // Self-heal: if auth user exists but donor row is missing (e.g. a
+        // previous sign-up failed after creating the auth user), show a
+        // "Complete your profile" form so they can finish setup without
+        // needing to contact support.
+        var user = currentAuthUser();
         if (card) card.innerHTML =
-          '<div class="empty-state"><div class="emoji">⚠️</div>' +
-          '<h3>Profile not found</h3><p>Your donor profile could not be loaded. ' +
-          'Please contact support.</p></div>';
+          '<div class="empty-state"><div class="emoji">📝</div>' +
+          '<h3>Complete your donor profile</h3>' +
+          '<p>Your account exists but your donor profile is not set up yet. ' +
+          'Fill in the details below to start appearing in search results.</p>' +
+          '<div class="complete-form" style="max-width:480px;margin:1.2rem auto 0;text-align:left">' +
+            '<div class="field"><label>Full Name</label>' +
+              '<input class="input" id="cpName" placeholder="Your full name" value="' +
+              escapeHtml(user && user.email ? user.email.split("@")[0] : "") + '"></div>' +
+            '<div class="field"><label>Blood Group</label>' +
+              '<select class="input" id="cpGroup">' +
+                '<option value="">Select…</option>' +
+                ["A+","A-","B+","B-","O+","O-","AB+","AB-"].map(function (g) {
+                  return '<option value="' + g + '">' + g + '</option>';
+                }).join("") +
+              '</select></div>' +
+            '<div class="field"><label>City</label>' +
+              '<input class="input" id="cpCity" placeholder="e.g. Mumbai"></div>' +
+            '<div class="field"><label>Phone Number</label>' +
+              '<input class="input" id="cpPhone" placeholder="+91-98765-43210"></div>' +
+            '<button class="btn btn--green btn--block" id="cpSave">Save & Continue</button>' +
+          '</div></div>';
+
+        var saveBtn = $("#cpSave");
+        if (saveBtn) {
+          saveBtn.addEventListener("click", function () {
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Saving…";
+            var payload = {
+              user_id: user && user.id,
+              full_name: ($("#cpName").value || "").trim(),
+              blood_group: ($("#cpGroup").value || "").trim(),
+              city: ($("#cpCity").value || "").trim(),
+              phone: ($("#cpPhone").value || "").trim(),
+              email: user && user.email,
+              available: true
+            };
+            if (!payload.full_name || !payload.blood_group || !payload.city || !payload.phone) {
+              saveBtn.disabled = false;
+              saveBtn.textContent = "Save & Continue";
+              toast("Please fill in all fields.", "error");
+              return;
+            }
+            var client = window.BD_SUPABASE;
+            client.from("donors").insert(payload).then(function (res) {
+              if (res.error) {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save & Continue";
+                toast("Could not save: " + (res.error.message || "error"), "error");
+                return;
+              }
+              toast("Profile created! Welcome aboard 🎉", "success");
+              renderUserProfile(); // reload with the new row
+            }).catch(function () {
+              saveBtn.disabled = false;
+              saveBtn.textContent = "Save & Continue";
+              toast("Network error. Try again.", "error");
+            });
+          });
+        }
         return;
       }
       var title = $("#dashTitle");
