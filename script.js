@@ -20,6 +20,7 @@
         CFG.supabaseUrl, CFG.supabaseAnonKey
       );
       window.BD_SUPABASE = client;
+      initSessionCache(); // populate the cached session for sync access
       cb(null, client);
       return;
     }
@@ -129,20 +130,32 @@
   }
 
   /* ----------  CURRENT USER / SESSION  ---------- */
-  function currentSession() {
+  // In supabase-js v2, auth.session() was removed. We cache the session
+  // after it is loaded asynchronously and refresh it on auth state
+  // changes, so currentSession() / currentAuthUser() can stay synchronous.
+  var _cachedSession = null;
+  var _sessionReady = false;
+
+  function initSessionCache() {
     var client = window.BD_SUPABASE;
-    if (!client) return null;
-    // supabase-js v2: session is read synchronously from the in-memory store
-    try {
-      var session = client.auth.session ? client.auth.session() : null;
-      return session;
-    } catch (e) { return null; }
+    if (!client) return;
+    client.auth.getSession().then(function (res) {
+      _cachedSession = (res.data && res.data.session) ? res.data.session : null;
+      _sessionReady = true;
+    }).catch(function () { _sessionReady = true; });
+    // Keep cache fresh on login / logout / token refresh.
+    client.auth.onAuthStateChange(function (_evt, session) {
+      _cachedSession = session || null;
+      _sessionReady = true;
+    });
+  }
+
+  function currentSession() {
+    return _cachedSession;
   }
 
   function currentAuthUser() {
-    var client = window.BD_SUPABASE;
-    if (!client) return null;
-    var s = client.auth.session ? client.auth.session() : null;
+    var s = _cachedSession;
     return s && s.user ? s.user : null;
   }
 
@@ -464,6 +477,8 @@
     if (client) {
       client.auth.getSession().then(function (res) {
         if (res.data && res.data.session) {
+          _cachedSession = res.data.session;
+          _sessionReady = true;
           window.location.replace("dashboard.html");
         }
       });
@@ -543,6 +558,13 @@
     client.auth.getSession().then(function (res) {
       var session = res.data && res.data.session;
       if (!session) { window.location.replace("login.html"); return; }
+
+      // IMPORTANT: populate the cache so currentAuthUser() (used by
+      // renderUserProfile / fetchMyDonorRow) returns the right user
+      // synchronously. Without this, the RLS insert policy fails because
+      // user_id and email are null.
+      _cachedSession = session;
+      _sessionReady = true;
 
       var user = session.user;
       var admin = isAdminEmail(user.email);
@@ -825,6 +847,8 @@
     window.BD_SUPABASE.auth.getSession().then(function (res) {
       var session = res.data && res.data.session;
       if (session && session.user) {
+        _cachedSession = session;
+        _sessionReady = true;
         var email = session.user.email;
         var isAdmin = isAdminEmail(email);
         navGreet.textContent = isAdmin ? "Admin" : "Donor";
